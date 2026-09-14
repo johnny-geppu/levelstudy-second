@@ -8,7 +8,7 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 
-export default async function ShowPage({ params }: { params: { id: string } }) {
+export default async function ShowPage({ params }: { params: Promise<{ id: string }> }) {
     const session = await auth()
     const userId = session?.user?.id
     if (!session?.user?.email || !userId) {
@@ -32,4 +32,4 @@ export default async function ShowPage({ params }: { params: { id: string } }) {
             </Card>
         </div>
     )
-} 
+}

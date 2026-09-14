@@ -41,7 +41,8 @@ export async function getOwnSkill(userId: string, skillId: string) {
             title: true,
             isPublic: true,
             archived: true,
-            records: {
+            createdAt: true,
+            record: {
                 select: {
                     id: true,
                     content: true,

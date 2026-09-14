@@ -5,7 +5,7 @@ import { auth } from "@/auth";
 import CreateSkillForm from "@/components/skill/CreateSkillForm";
 import Link from "next/link";
 
-export default async function SkillsPage(skillId: string) {
+export default async function SkillsPage() {
     const session = await auth();
     const userId = session?.user?.id;
     if (!session?.user?.email || !userId) {
