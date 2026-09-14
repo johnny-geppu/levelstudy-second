@@ -1,65 +1,67 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { calculateTotalStudyTime } from "@/lib/studyStats";
-import { findLatestStudyDate } from "@/lib/studyStats";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import {
+    calculateTotalStudyTime,
+    findLatestStudyDate,
+    calculateLevel,
+} from "@/lib/studyStats";
 import type { SkillCardProps } from "@/types/skills";
-import { calculateLevel } from './../../lib/studyStats';
 
 export default function OwnSkillCard({ skill }: SkillCardProps) {
-    // 全記録の学習時間を合計する
     const totalMinutes = skill.record.reduce(
         (total, record) => total + record.minutes,
         0
     );
+
     const totalStudyTime = calculateTotalStudyTime(skill.record);
     const latestStudyDate = findLatestStudyDate(skill.record);
-    //totalStudyTimeをnumberに変換するメソッド
-    const xp = totalMinutes;
-    const level = calculateLevel(xp);
-    console.log('totalStudyTime:', totalStudyTime);
+    const level = calculateLevel(totalMinutes);
+
     return (
-        <Card className="h-full">
-            <CardHeader>
-                <CardTitle className="truncate" title={skill.title}>
+        <Card className="h-full min-w-0 gap-3 py-4">
+            <CardHeader className="px-4">
+                <CardTitle
+                    className="truncate text-base"
+                    title={skill.title}
+                >
                     {skill.title}
                 </CardTitle>
             </CardHeader>
 
-            <CardContent>
-                {skill.record.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">
-                        まだ学習記録がありません
+            <CardContent className="space-y-3 px-4">
+                <div>
+                    <p className="text-2xl font-bold">Lv.{level}</p>
+                    <p className="text-xs text-muted-foreground">
+                        100分の学習ごとにレベルアップ
                     </p>
-                ) : (
-                    <dl className="space-y-4">
-                        <div>
-                            <dt className="text-sm text-muted-foreground">
-                                累計学習時間
-                            </dt>
-                            <dd className="mt-1 text-2xl font-bold">
-                                レベル{level}/ {totalStudyTime}
-                            </dd>
-                            <p>100分で1レベル</p>
-                        </div>
+                </div>
 
-                        <div className="flex justify-between gap-4 border-t pt-4">
-                            <dt className="text-sm text-muted-foreground">
-                                学習記録
-                            </dt>
-                            <dd className="text-sm font-medium">
-                                {skill.record.length}件
-                            </dd>
-                        </div>
+                <dl className="space-y-2 border-t pt-3 text-sm">
+                    <div className="flex justify-between gap-2">
+                        <dt className="text-muted-foreground">累計時間</dt>
+                        <dd className="text-right font-medium">
+                            {totalStudyTime}
+                        </dd>
+                    </div>
 
-                        <div className="flex justify-between gap-4">
-                            <dt className="text-sm text-muted-foreground">
-                                最終学習日
-                            </dt>
-                            <dd className="text-sm font-medium">
-                                {latestStudyDate?.toLocaleDateString("ja-JP") ?? "-"}
-                            </dd>
-                        </div>
-                    </dl>
-                )}
+                    <div className="flex justify-between gap-2">
+                        <dt className="text-muted-foreground">記録数</dt>
+                        <dd>{skill.record.length}件</dd>
+                    </div>
+
+                    <div className="flex justify-between gap-2">
+                        <dt className="text-muted-foreground">最終学習</dt>
+                        <dd>
+                            {latestStudyDate?.toLocaleDateString("ja-JP", {
+                                timeZone: "Asia/Tokyo",
+                            }) ?? "未記録"}
+                        </dd>
+                    </div>
+                </dl>
             </CardContent>
         </Card>
     );

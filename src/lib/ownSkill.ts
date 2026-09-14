@@ -29,6 +29,31 @@ export async function getOwnSkills(userId: string) {
 export async function getOwnSkill(userId: string, skillId: string) {
     return await prisma.skill.findFirst({
         where: {
+            AND: [
+                {
+                    userId,
+                    id: skillId,
+                }
+            ]
+        },
+        select: {
+            id: true,
+            title: true,
+            isPublic: true,
+            archived: true,
+            records: {
+                select: {
+                    id: true,
+                    content: true,
+                    minutes: true,
+                    studiedAt: true,
+                },
+                orderBy: [
+                    { studiedAt: { sort: "desc", nulls: "last" } },
+                    { createdAt: "desc" },
+                    { id: "desc" },
+                ],
+            },
         }
     })
 }
