@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation"
 import Link from "next/link"
 import CreateStudyRecordForm from "@/components/skill/CreateStudyRecordForm"
 import StudyRecordItem from "@/components/skill/StudyRecordItem"
+import SkillSettings from "@/components/skill/SkillSettings"
 import { calculateLevel, calculateTotalStudyTime } from "@/lib/studyStats"
 import { formatStudyDate, getJapanDate } from "@/lib/studyDate"
 import {
@@ -43,6 +44,7 @@ export default async function ShowPage({ params }: { params: Promise<{ id: strin
                     <p>作成日：{formatStudyDate(skill.createdAt)}</p>
                 </CardContent>
             </Card>
+            {!skill.archived && <SkillSettings skill={{ id: skill.id, title: skill.title, isPublic: skill.isPublic }} />}
             <section className="space-y-4">
                 <h2 className="text-xl font-semibold">学習記録を追加</h2>
                 {skill.archived
