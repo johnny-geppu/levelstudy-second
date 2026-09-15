@@ -2,13 +2,13 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { z } from "zod";
-import { skillSchema } from './../../validations/skillSchema';
+import { skillSchema } from '@/validations/skillSchema';
 import { revalidatePath } from "next/cache";
 
 type ActionState = {
     errors?: {
         title?: string[];
+        isPublic?: string[];
         form?: string[];
     };
     success?: boolean;
@@ -35,6 +35,7 @@ export async function createSkill(
     // フォームの入力を検証
     const validationResults = skillSchema.safeParse({
         title: formData.get("title"),
+        isPublic: formData.get("isPublic"),
     });
 
     if (!validationResults.success) {
@@ -44,14 +45,23 @@ export async function createSkill(
     }
 
     // 検証済みの名前と、ログイン中のuserIdを保存
-    await prisma.skill.create({
-        data: {
-            title: validationResults.data.title,
-            userId,
-        },
-    });
+    try {
+        await prisma.skill.create({
+            data: {
+                title: validationResults.data.title,
+                isPublic: validationResults.data.isPublic,
+                userId,
+            },
+        });
+    } catch (error) {
+        console.error("スキルの登録に失敗しました", error);
+        return { errors: { form: ["登録に失敗しました。時間をおいて再度お試しください。"] } };
+    }
 
     revalidatePath('/dashboard');
+    if (validationResults.data.isPublic) {
+        revalidatePath('/explore');
+    }
 
     return { success: true };
 }
