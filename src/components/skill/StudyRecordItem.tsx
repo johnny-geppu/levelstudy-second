@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import EditStudyRecordForm from "./EditStudyRecordForm";
+import DeleteStudyRecordDialog from "./DeleteStudyRecordDialog";
 
 type Props = {
     record: { id: string; studiedAt: string; minutes: number; content: string };
@@ -25,8 +26,13 @@ export default function StudyRecordItem({ record, dateLabel, today, canEdit }: P
                 <>
                     <p className="font-medium">{dateLabel} · {record.minutes}分</p>
                     <p className="mt-2 whitespace-pre-wrap break-words">{record.content}</p>
-                    {canEdit && <Button type="button" variant="outline" className="mt-3"
-                        onClick={() => { setSaved(false); setEditing(true); }}>編集</Button>}
+                    {canEdit && (
+                        <div className="mt-3 flex gap-2">
+                            <Button type="button" variant="outline"
+                                onClick={() => { setSaved(false); setEditing(true); }}>編集</Button>
+                            <DeleteStudyRecordDialog recordId={record.id} dateLabel={dateLabel} minutes={record.minutes} />
+                        </div>
+                    )}
                     {saved && <p role="status" className="mt-2 text-sm">学習記録を更新しました。</p>}
                 </>
             )}
