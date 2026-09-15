@@ -3,6 +3,7 @@ import { getOwnSkill } from "@/lib/ownSkill"
 import { notFound, redirect } from "next/navigation"
 import Link from "next/link"
 import CreateStudyRecordForm from "@/components/skill/CreateStudyRecordForm"
+import StudyRecordItem from "@/components/skill/StudyRecordItem"
 import { calculateLevel, calculateTotalStudyTime } from "@/lib/studyStats"
 import { formatStudyDate, getJapanDate } from "@/lib/studyDate"
 import {
@@ -53,10 +54,10 @@ export default async function ShowPage({ params }: { params: Promise<{ id: strin
                 {skill.record.length === 0 ? <p>まだ学習記録がありません。最初の学習を記録しましょう。</p> : (
                     <ul className="space-y-3">
                         {skill.record.map((record) => (
-                            <li key={record.id} className="rounded-lg border p-4">
-                                <p className="font-medium">{formatStudyDate(record.studiedAt)} · {record.minutes}分</p>
-                                <p className="mt-2 whitespace-pre-wrap break-words">{record.content}</p>
-                            </li>
+                            <StudyRecordItem key={record.id}
+                                record={{ ...record, studiedAt: record.studiedAt ? getJapanDate(record.studiedAt) : "" }}
+                                dateLabel={formatStudyDate(record.studiedAt)}
+                                today={getJapanDate()} canEdit={!skill.archived} />
                         ))}
                     </ul>
                 )}
