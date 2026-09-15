@@ -31,6 +31,7 @@ export function findLatestStudyDate(records: { minutes: number; studiedAt: Date 
     return latestStudyDate;
 };
 
-export function calculateLevel(xp: number) {
-    return Math.floor(Math.sqrt(xp / 100));
+// 1分 = 1XP。0分ではLv.1、100分ごとに1レベル上がる。
+export function calculateLevel(totalMinutes: number) {
+    return Math.floor(totalMinutes / 100) + 1;
 }

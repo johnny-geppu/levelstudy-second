@@ -15,7 +15,7 @@ import Link from "next/link"
 export default function Setting({ session }: { session: Session }) {
     const handleLogout = async () => {
         'use server'
-        await signOut()
+        await signOut({ redirectTo: '/' })
     }
     return (
         <DropdownMenu>
@@ -27,7 +27,11 @@ export default function Setting({ session }: { session: Session }) {
                 <DropdownMenuItem render={<Link href="/explore" />}>
                     みんなのスキル
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout}>ログアウト</DropdownMenuItem>
+                <form action={handleLogout}>
+                    <DropdownMenuItem render={<button type="submit" />} className="w-full">
+                        ログアウト
+                    </DropdownMenuItem>
+                </form>
                 <DropdownMenuItem render={<Link href="/profile" />}>
                     プロフィール
                 </DropdownMenuItem>

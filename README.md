@@ -20,6 +20,12 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## 認証の確認
+
+`npm run test:auth` で、未ログイン時のアクセス制限、ログイン済みのページ移動、公開ページの閲覧ルールを確認できます。
+
+`npm run build` 後に `npm start` で本番モードを動かす場合は、`.env` に `AUTH_URL=http://localhost:3000` を設定してください。デプロイ時は実際の公開URLに置き換えます。Auth.jsが信頼する接続先URLとして使用します。セッションの暗号化に使う `AUTH_SECRET` も必要です。秘密値をGitにコミットしないでください。
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

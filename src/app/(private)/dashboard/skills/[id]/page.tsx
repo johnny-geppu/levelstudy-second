@@ -1,6 +1,6 @@
 import { auth } from "@/auth"
 import { getOwnSkill } from "@/lib/ownSkill"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import {
     Card,
     CardContent,
@@ -12,7 +12,7 @@ export default async function ShowPage({ params }: { params: Promise<{ id: strin
     const session = await auth()
     const userId = session?.user?.id
     if (!session?.user?.email || !userId) {
-        throw new Error('不正なリクエストです')
+        redirect('/login')
     }
     const { id } = await params
     const skill = await getOwnSkill(userId, id)

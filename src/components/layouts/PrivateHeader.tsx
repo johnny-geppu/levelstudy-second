@@ -14,8 +14,7 @@ export default async function PrivateHeader() {
     const session = await auth()
     
 
-    if (!session?.user?.email) {
-        // throw new Error("不正なリクエストです")
+    if (!session?.user?.email || !session.user.id) {
         redirect("/login")
     }
 

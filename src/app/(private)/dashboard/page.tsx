@@ -4,12 +4,13 @@ import OwnSkillCard from '@/components/skill/OwnSkillCard';
 import { auth } from "@/auth";
 import CreateSkillForm from "@/components/skill/CreateSkillForm";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function SkillsPage() {
     const session = await auth();
     const userId = session?.user?.id;
     if (!session?.user?.email || !userId) {
-        throw new Error('不正なリクエストです')
+        redirect('/login');
     }
     const skills = await getOwnSkills(userId) as Skill[];
     return (

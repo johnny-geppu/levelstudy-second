@@ -3,7 +3,7 @@
 
 // authenticate = 実際にログインする
 // auth = ログイン情報が正しいか確認
-// proxy = ログイン状態を確認するミドルウェア的なもの
+// middleware = ページへのアクセス時にログイン状態を確認
 // auth.config = ログイン状態に応じたアクセスルール
 
 import NextAuth from "next-auth";
@@ -54,6 +54,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         }),
     ],
     callbacks: {
+        ...authConfig.callbacks,
         //sessionはname, emailのみ token.subにidが含まれているので 
         // session.user.idで取得できるようにしておく
         async session({ session, token }) {
