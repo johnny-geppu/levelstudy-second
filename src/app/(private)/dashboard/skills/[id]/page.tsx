@@ -1,6 +1,10 @@
 import { auth } from "@/auth"
 import { getOwnSkill } from "@/lib/ownSkill"
 import { notFound, redirect } from "next/navigation"
+import Link from "next/link"
+import CreateStudyRecordForm from "@/components/skill/CreateStudyRecordForm"
+import { calculateLevel, calculateTotalStudyTime } from "@/lib/studyStats"
+import { formatStudyDate, getJapanDate } from "@/lib/studyDate"
 import {
     Card,
     CardContent,
@@ -20,16 +24,43 @@ export default async function ShowPage({ params }: { params: Promise<{ id: strin
     if (!skill) {
         notFound()
     }
+    const totalMinutes = skill.record.reduce((total, record) => total + record.minutes, 0)
+    console.log(new Date(),new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" }))
+    console.log(getJapanDate())
+    console.log(skill.createdAt)
     return (
-        <div>
+        <main className="mx-auto max-w-3xl space-y-6 p-4">
+            <Link href="/dashboard" className="text-sm underline">マイスキルへ戻る</Link>
             <Card>
                 <CardHeader>
                     <CardTitle>{skill.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p>作成日: {new Date(skill.createdAt).toLocaleDateString()}</p>
+                    <p className="text-2xl font-bold">Lv.{calculateLevel(totalMinutes)}</p>
+                    <p>累計学習時間：{calculateTotalStudyTime(skill.record)}</p>
+                    <p>公開状態：{skill.isPublic ? "公開" : "非公開"}</p>
+                    <p>作成日：{formatStudyDate(skill.createdAt)}</p>
                 </CardContent>
             </Card>
-        </div>
+            <section className="space-y-4">
+                <h2 className="text-xl font-semibold">学習記録を追加</h2>
+                {skill.archived
+                    ? <p>アーカイブ済みのスキルには記録を追加できません。</p>
+                    : <CreateStudyRecordForm skillId={skill.id} today={getJapanDate()} />}
+            </section>
+            <section className="space-y-4">
+                <h2 className="text-xl font-semibold">学習履歴</h2>
+                {skill.record.length === 0 ? <p>まだ学習記録がありません。最初の学習を記録しましょう。</p> : (
+                    <ul className="space-y-3">
+                        {skill.record.map((record) => (
+                            <li key={record.id} className="rounded-lg border p-4">
+                                <p className="font-medium">{formatStudyDate(record.studiedAt)} · {record.minutes}分</p>
+                                <p className="mt-2 whitespace-pre-wrap break-words">{record.content}</p>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </section>
+        </main>
     )
 }

@@ -49,7 +49,7 @@ export default function SkillCard({ skill }: SkillCardProps) {
                                 最終学習日
                             </dt>
                             <dd className="text-sm font-medium">
-                                {latestStudyDate?.toLocaleDateString("ja-JP") ?? "-"}
+                                {latestStudyDate?.toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo" }) ?? "-"}
                             </dd>
                         </div>
                     </dl>
