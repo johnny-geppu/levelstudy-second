@@ -53,19 +53,28 @@ export async function getOwnSkill(userId: string, skillId: string) {
             isPublic: true,
             archived: true,
             createdAt: true,
-            record: {
-                select: {
-                    id: true,
-                    content: true,
-                    minutes: true,
-                    studiedAt: true,
-                },
-                orderBy: [
-                    { studiedAt: { sort: "desc", nulls: "last" } },
-                    { createdAt: "desc" },
-                    { id: "desc" },
-                ],
-            },
         }
     })
+}
+
+export async function getOwnStudyRecordSummary(userId: string, skillId: string) {
+    return prisma.studyRecord.aggregate({
+        where: { skillId, skill: { userId } },
+        _count: { _all: true },
+        _sum: { minutes: true },
+    });
+}
+
+export async function getOwnStudyRecords(userId: string, skillId: string, skip: number, take: number) {
+    return prisma.studyRecord.findMany({
+        where: { skillId, skill: { userId } },
+        select: { id: true, content: true, minutes: true, studiedAt: true },
+        orderBy: [
+            { studiedAt: { sort: "desc", nulls: "last" } },
+            { createdAt: "desc" },
+            { id: "desc" },
+        ],
+        skip,
+        take,
+    });
 }

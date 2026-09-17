@@ -1,12 +1,13 @@
 import { auth } from "@/auth"
-import { getOwnSkill } from "@/lib/ownSkill"
+import { getOwnSkill, getOwnStudyRecordSummary, getOwnStudyRecords } from "@/lib/ownSkill"
 import { notFound, redirect } from "next/navigation"
 import Link from "next/link"
 import CreateStudyRecordForm from "@/components/skill/CreateStudyRecordForm"
 import StudyRecordItem from "@/components/skill/StudyRecordItem"
 import SkillSettings from "@/components/skill/SkillSettings"
 import ArchiveSkillDialog from "@/components/skill/ArchiveSkillDialog"
-import { calculateLevel, calculateTotalStudyTime } from "@/lib/studyStats"
+import { calculateLevel, formatStudyMinutes } from "@/lib/studyStats"
+import { getStudyRecordPagination, STUDY_RECORD_PAGE_SIZE } from "@/lib/studyRecordPagination"
 import { formatStudyDate, getJapanDate } from "@/lib/studyDate"
 import {
     Card,
@@ -15,7 +16,10 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 
-export default async function ShowPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ShowPage({ params, searchParams }: {
+    params: Promise<{ id: string }>,
+    searchParams: Promise<{ page?: string | string[] }>,
+}) {
     const session = await auth()
     const userId = session?.user?.id
     if (!session?.user?.email || !userId) {
@@ -27,7 +31,16 @@ export default async function ShowPage({ params }: { params: Promise<{ id: strin
     if (!skill) {
         notFound()
     }
-    const totalMinutes = skill.record.reduce((total, record) => total + record.minutes, 0)
+    // 集計は全記録を対象にし、表示する履歴だけを10件ずつ取得する。
+    const summary = await getOwnStudyRecordSummary(userId, id)
+    const totalMinutes = summary._sum.minutes ?? 0
+    const totalCount = summary._count._all
+    const query = await searchParams
+    const { page, totalPages, skip, requestedPage } = getStudyRecordPagination(query.page, totalCount)
+    if (requestedPage !== page) {
+        redirect(`/dashboard/skills/${id}?page=${page}`)
+    }
+    const records = await getOwnStudyRecords(userId, id, skip, STUDY_RECORD_PAGE_SIZE)
     console.log(new Date(),new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" }))
     console.log(getJapanDate())
     console.log(skill.createdAt)
@@ -40,7 +53,7 @@ export default async function ShowPage({ params }: { params: Promise<{ id: strin
                 </CardHeader>
                 <CardContent>
                     <p className="text-2xl font-bold">Lv.{calculateLevel(totalMinutes)}</p>
-                    <p>累計学習時間：{calculateTotalStudyTime(skill.record)}</p>
+                    <p>累計学習時間：{formatStudyMinutes(totalMinutes)}</p>
                     <p>公開状態：{skill.archived ? "非表示（アーカイブ済み）" : skill.isPublic ? "公開" : "非公開"}</p>
                     <p>作成日：{formatStudyDate(skill.createdAt)}</p>
                 </CardContent>
@@ -60,15 +73,26 @@ export default async function ShowPage({ params }: { params: Promise<{ id: strin
             </section>
             <section className="space-y-4">
                 <h2 className="text-xl font-semibold">学習履歴</h2>
-                {skill.record.length === 0 ? <p>まだ学習記録がありません。最初の学習を記録しましょう。</p> : (
+                <p className="text-sm">全{totalCount}件 · {page} / {totalPages}ページ</p>
+                {totalCount === 0 ? <p>まだ学習記録がありません。最初の学習を記録しましょう。</p> : (
                     <ul className="space-y-3">
-                        {skill.record.map((record) => (
+                        {records.map((record) => (
                             <StudyRecordItem key={record.id}
                                 record={{ ...record, studiedAt: record.studiedAt ? getJapanDate(record.studiedAt) : "" }}
                                 dateLabel={formatStudyDate(record.studiedAt)}
                                 today={getJapanDate()} canEdit={!skill.archived} />
                         ))}
                     </ul>
+                )}
+                {totalPages > 1 && (
+                    <nav aria-label="学習履歴のページ切り替え" className="flex items-center gap-4">
+                        {page > 1 && (
+                            <Link href={`/dashboard/skills/${id}?page=${page - 1}`} className="underline">前のページ</Link>
+                        )}
+                        {page < totalPages && (
+                            <Link href={`/dashboard/skills/${id}?page=${page + 1}`} className="underline">次のページ</Link>
+                        )}
+                    </nav>
                 )}
             </section>
         </main>
