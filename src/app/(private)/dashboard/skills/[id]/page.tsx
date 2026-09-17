@@ -5,6 +5,7 @@ import Link from "next/link"
 import CreateStudyRecordForm from "@/components/skill/CreateStudyRecordForm"
 import StudyRecordItem from "@/components/skill/StudyRecordItem"
 import SkillSettings from "@/components/skill/SkillSettings"
+import ArchiveSkillDialog from "@/components/skill/ArchiveSkillDialog"
 import { calculateLevel, calculateTotalStudyTime } from "@/lib/studyStats"
 import { formatStudyDate, getJapanDate } from "@/lib/studyDate"
 import {
@@ -40,11 +41,17 @@ export default async function ShowPage({ params }: { params: Promise<{ id: strin
                 <CardContent>
                     <p className="text-2xl font-bold">Lv.{calculateLevel(totalMinutes)}</p>
                     <p>累計学習時間：{calculateTotalStudyTime(skill.record)}</p>
-                    <p>公開状態：{skill.isPublic ? "公開" : "非公開"}</p>
+                    <p>公開状態：{skill.archived ? "非表示（アーカイブ済み）" : skill.isPublic ? "公開" : "非公開"}</p>
                     <p>作成日：{formatStudyDate(skill.createdAt)}</p>
                 </CardContent>
             </Card>
             {!skill.archived && <SkillSettings skill={{ id: skill.id, title: skill.title, isPublic: skill.isPublic }} />}
+            <section className="space-y-3 rounded-lg border p-4">
+                <h2 className="text-xl font-semibold">{skill.archived ? "アーカイブ済み" : "スキルのアーカイブ"}</h2>
+                <p>{skill.archived ? "履歴は閲覧できます。変更するには復元してください。" : "学習履歴を残して、一覧から外すことができます。"}</p>
+                <ArchiveSkillDialog skillId={skill.id} archived={!!skill.archived} isPublic={skill.isPublic} />
+                <Link href="/dashboard/archived" className="block text-sm underline">アーカイブ済み一覧へ</Link>
+            </section>
             <section className="space-y-4">
                 <h2 className="text-xl font-semibold">学習記録を追加</h2>
                 {skill.archived

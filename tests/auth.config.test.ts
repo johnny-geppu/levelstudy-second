@@ -15,7 +15,7 @@ function authorize(path: string, loggedIn: boolean) {
     });
 }
 
-for (const path of ["/dashboard", "/dashboard/skills/new", "/dashboard/skills/test-skill"]) {
+for (const path of ["/dashboard", "/dashboard/archived", "/dashboard/skills/new", "/dashboard/skills/test-skill"]) {
     test(`未ログインでは${path}からログインへ移動する`, () => {
         const result = authorize(path, false);
         assert.ok(result instanceof Response);

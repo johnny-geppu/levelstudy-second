@@ -1,5 +1,16 @@
 import { prisma } from "./prisma";
 
+export async function getArchivedSkills(userId: string) {
+    return prisma.skill.findMany({
+        where: { userId, archived: { not: null } },
+        select: {
+            id: true, title: true, isPublic: true, archived: true,
+            record: { select: { minutes: true, studiedAt: true } },
+        },
+        orderBy: [{ archived: "desc" }, { id: "desc" }],
+    });
+}
+
 export async function getOwnSkills(userId: string) {
     return await prisma.skill.findMany({
         where: {

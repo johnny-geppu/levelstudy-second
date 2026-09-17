@@ -19,6 +19,7 @@ export default async function SkillsPage() {
                 <div>
                     あなたの学習の成果を見てみよう
                 </div>
+                <Link href="/dashboard/archived" className="text-sm underline">アーカイブ済み</Link>
             </section>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {skills.map((skill) => (
