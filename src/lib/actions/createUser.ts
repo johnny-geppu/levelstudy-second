@@ -52,31 +52,31 @@ export async function createUser(
     if (!validationResult.success) {
         return handleValidationError(validationResult.error);
     }
-    const existingUser = await prisma.user.findUnique({
-        where: {
-            email: rawFormData.email
+    const { name, email, password } = validationResult.data;
+    try {
+        const existingUser = await prisma.user.findUnique({ where: { email } });
+        if (existingUser) {
+            return handleError({ email: ["このメールアドレスはすでに登録されています。"] });
         }
-    })
 
-    if (existingUser) {
-        return handleError({
-            email: ["このメールアドレスはすでに登録されています。"]
-        })
+        const hashedPassword = await bcryptjs.hash(password, 10);
+        await prisma.user.create({
+            data: { name, email, password: hashedPassword },
+        });
+    } catch (error) {
+        // 同時に同じメールで登録された場合もDBの一意制約で検出する。
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+            return handleError({ email: ["このメールアドレスはすでに登録されています。"] });
+        }
+        console.error("ユーザー登録に失敗しました", error);
+        return handleError({ form: ["登録処理を完了できませんでした。時間をおいて再度お試しください。"] });
     }
-
-    //dbに登録
-    const hashedPassword = await bcryptjs.hash(rawFormData.password, 10);
-    await prisma.user.create({
-        data: {
-            name: rawFormData.name,
-            email: rawFormData.email,
-            password: hashedPassword
-        }
-    })
-    await signIn('credentials', {
-        ...Object.fromEntries(formData),
-        redirect: false, // 自動リダイレクトを無効化
-    })
+    try {
+        await signIn('credentials', { email, password, redirect: false });
+    } catch (error) {
+        console.error("登録後のログインに失敗しました", error);
+        return handleError({ form: ["アカウントは登録されましたが、自動ログインに失敗しました。ログイン画面からお試しください。"] });
+    }
 
     redirect('/dashboard');
 }

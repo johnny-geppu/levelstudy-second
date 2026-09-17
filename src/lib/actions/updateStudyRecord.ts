@@ -18,6 +18,9 @@ export async function updateStudyRecord(
     const session = await auth();
     const userId = session?.user?.id;
     if (!userId) return { errors: { form: ["ログインしてください"] } };
+    if (typeof recordId !== "string" || !recordId) {
+        return { errors: { form: ["更新する記録を指定してください。"] } };
+    }
 
     const result = studyRecordSchema.safeParse({
         studiedAt: formData.get("studiedAt"),

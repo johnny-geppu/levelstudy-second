@@ -41,6 +41,12 @@ export default async function SkillsPage() {
                 </dl>
                 <p className="text-sm text-muted-foreground">学習時間にはアーカイブ済みの記録も含みます。学習日は日本時間で集計します。</p>
             </section>
+            {skills.length === 0 && (
+                <p className="rounded-lg border p-4 text-muted-foreground">
+                    学習中のスキルはまだありません。「＋ スキルを追加」から、最初のスキルを登録しましょう。
+                    アーカイブしたスキルは「アーカイブ済み」から復元できます。
+                </p>
+            )}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {skills.map((skill) => (
                     <Link

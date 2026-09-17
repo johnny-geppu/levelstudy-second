@@ -18,6 +18,9 @@ export async function createStudyRecord(
     const session = await auth();
     const userId = session?.user?.id;
     if (!userId) return { errors: { form: ["ログインしてください"] } };
+    if (typeof skillId !== "string" || !skillId) {
+        return { errors: { form: ["スキルを指定してください。"] } };
+    }
 
     const result = studyRecordSchema.safeParse({
         studiedAt: formData.get("studiedAt"),

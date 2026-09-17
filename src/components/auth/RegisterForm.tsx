@@ -12,9 +12,10 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { useActionState } from "react";
 import { createUser } from "@/lib/actions/createUser";
+import Link from "next/link";
 
 export default function RegisterForm() {
-  const [state, formAction] = useActionState(
+  const [state, formAction, pending] = useActionState(
     createUser,
     {
       success: false,
@@ -104,9 +105,11 @@ export default function RegisterForm() {
             )}
           </div>
 
-          <Button type="submit" className="w-full">
-            登録
+          {state.errors.form && <p role="alert" className="text-sm text-red-500">{state.errors.form.join("、")}</p>}
+          <Button type="submit" className="w-full" disabled={pending}>
+            {pending ? "登録中..." : "登録"}
           </Button>
+          <Link href="/login" className="block text-sm underline">登録済みの方はログイン</Link>
 
         </form>
       </CardContent>

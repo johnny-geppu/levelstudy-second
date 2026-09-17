@@ -1,10 +1,7 @@
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuGroup,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { signOut } from "@/auth"
@@ -24,6 +21,9 @@ export default function Setting({ session }: { session: Session }) {
                 {session.user?.name}
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem render={<Link href="/dashboard" />}>
+                    マイスキル
+                </DropdownMenuItem>
                 <DropdownMenuItem render={<Link href="/explore" />}>
                     みんなのスキル
                 </DropdownMenuItem>
@@ -32,9 +32,6 @@ export default function Setting({ session }: { session: Session }) {
                         ログアウト
                     </DropdownMenuItem>
                 </form>
-                <DropdownMenuItem render={<Link href="/profile" />}>
-                    プロフィール
-                </DropdownMenuItem>
 
             </DropdownMenuContent>
         </DropdownMenu >

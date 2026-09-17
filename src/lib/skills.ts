@@ -8,7 +8,9 @@ export async function getSkills() {
             isPublic: true,
             archived: null,
         },
-        include: {
+        select: {
+            id: true,
+            title: true,
             user:{
                 select: {
                     name: true
@@ -16,7 +18,6 @@ export async function getSkills() {
             },
             record: {
                 select: {
-                    id: true,
                     minutes: true,
                     studiedAt: true
                 }
