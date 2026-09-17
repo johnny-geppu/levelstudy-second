@@ -14,7 +14,7 @@ export default function SkillCard({ skill }: SkillCardProps) {
     const totalMinutes = skill.record.reduce((total, record) => total + record.minutes, 0);
     const latestStudyDate = findLatestStudyDate(skill.record);
     return (
-        <Card className="h-full min-w-0">
+        <Card className="h-full min-w-0 py-6 [--card-spacing:1.5rem]">
             <CardHeader>
                 <CardTitle className="truncate" title={skill.title}>
                     {skill.title}
@@ -26,15 +26,10 @@ export default function SkillCard({ skill }: SkillCardProps) {
             </CardHeader>
 
             <CardContent>
-                {skill.record.length === 0 && (
-                    <p className="mb-4 text-sm text-muted-foreground">
-                        まだ学習記録がありません
-                    </p>
-                )}
                 <dl className="space-y-4">
                     <div>
                         <dt className="text-sm text-muted-foreground">レベル</dt>
-                        <dd className="mt-1 text-2xl font-bold">Lv.{calculateLevel(totalMinutes)}</dd>
+                        <dd className="mt-1 text-3xl font-bold text-primary">Lv.{calculateLevel(totalMinutes)}</dd>
                     </div>
                     <div>
                         <dt className="text-sm text-muted-foreground">
@@ -63,6 +58,9 @@ export default function SkillCard({ skill }: SkillCardProps) {
                         </dd>
                     </div>
                 </dl>
+                {skill.record.length === 0 && (
+                    <p className="mt-4 text-xs text-muted-foreground">まだ学習記録がありません</p>
+                )}
             </CardContent>
         </Card>
     );

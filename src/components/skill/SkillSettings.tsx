@@ -11,7 +11,7 @@ export default function SkillSettings({ skill }: Props) {
     const [saved, setSaved] = useState(false);
 
     return (
-        <section className="space-y-4 rounded-lg border p-4">
+        <section className="surface space-y-4">
             <h2 className="text-xl font-semibold">スキル設定</h2>
             {editing ? (
                 <EditSkillForm skill={skill} onCancel={() => setEditing(false)}

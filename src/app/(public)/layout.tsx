@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import PrivateHeader from "@/components/layouts/PrivateHeader";
 import PublicHeader from "@/components/layouts/PublicHeader";
+import Footer from "@/components/layouts/Footer";
 
 export default async function PublicLayout({
     children,
@@ -13,6 +14,7 @@ export default async function PublicLayout({
         <>
             {session?.user ? <PrivateHeader /> : <PublicHeader />}
             {children}
+            <Footer />
         </>
     );
 }

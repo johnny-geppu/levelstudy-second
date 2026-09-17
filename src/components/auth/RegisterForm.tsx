@@ -24,7 +24,7 @@ export default function RegisterForm() {
   );
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md py-6 [--card-spacing:1.5rem]">
       <CardHeader>
         <CardTitle>ユーザー登録</CardTitle>
       </CardHeader>

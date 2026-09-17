@@ -22,8 +22,8 @@ export default function OwnSkillCard({ skill }: SkillCardProps) {
     const level = calculateLevel(totalMinutes);
 
     return (
-        <Card className="h-full min-w-0 gap-3 py-4">
-            <CardHeader className="px-4">
+        <Card className="h-full min-w-0 gap-5 py-6">
+            <CardHeader className="px-6">
                 <CardTitle
                     className="truncate text-base"
                     title={skill.title}
@@ -32,13 +32,14 @@ export default function OwnSkillCard({ skill }: SkillCardProps) {
                 </CardTitle>
             </CardHeader>
 
-            <CardContent className="space-y-3 px-4">
+            <CardContent className="space-y-4 px-6">
                 <div>
-                    <p className="text-2xl font-bold">Lv.{level}</p>
+                    <p className="text-3xl font-bold text-primary">Lv.{level}</p>
                     <p className="text-xs text-muted-foreground">
-                        100分の学習ごとにレベルアップ
+                        次のレベルまであと{100 - totalMinutes % 100}分
                     </p>
                 </div>
+                <div className="level-track" aria-hidden="true"><span style={{ width: `${totalMinutes % 100}%` }} /></div>
 
                 <dl className="space-y-2 border-t pt-3 text-sm">
                     <div className="flex justify-between gap-2">

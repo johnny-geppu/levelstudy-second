@@ -17,8 +17,8 @@ export default function Setting({ session }: { session: Session }) {
     return (
         <DropdownMenu>
 
-            <DropdownMenuTrigger render={<Button variant="ghost" />}>
-                {session.user?.name}
+            <DropdownMenuTrigger render={<Button variant="outline" className="max-w-44" />} aria-label="アカウントメニュー">
+                <span className="truncate">{session.user?.name}</span><span aria-hidden="true">⌄</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem render={<Link href="/dashboard" />}>

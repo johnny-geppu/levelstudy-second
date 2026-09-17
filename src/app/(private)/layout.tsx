@@ -1,4 +1,5 @@
 import PrivateHeader from "@/components/layouts/PrivateHeader";
+import Footer from "@/components/layouts/Footer";
 
 export default function PrivateLayout({
     children,
@@ -9,6 +10,7 @@ export default function PrivateLayout({
         <>
             <PrivateHeader />
             {children}
+            <Footer />
         </>
     );
 }

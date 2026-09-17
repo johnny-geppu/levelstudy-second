@@ -12,15 +12,16 @@ export default async function ArchivedSkillsPage() {
     const skills = await getArchivedSkills(userId);
 
     return (
-        <main className="mx-auto max-w-4xl space-y-6 p-4">
+        <main className="page-shell mx-auto max-w-4xl space-y-6 px-4">
             <Link href="/dashboard" className="text-sm underline">マイスキルへ戻る</Link>
-            <h1 className="text-2xl font-bold">アーカイブ済みのスキル</h1>
+            <p className="eyebrow">ARCHIVE</p>
+            <h1 className="page-title">アーカイブ済みのスキル</h1>
             <p>学習履歴は保存されています。スキル詳細から復元できます。</p>
-            {skills.length === 0 ? <p>アーカイブ済みのスキルはありません。</p> : (
+            {skills.length === 0 ? <p className="empty-state">アーカイブ済みのスキルはありません。</p> : (
                 <ul className="grid gap-4 sm:grid-cols-2">
                     {skills.map((skill) => (
                         <li key={skill.id}>
-                            <Link href={`/dashboard/skills/${skill.id}`} className="block space-y-2 rounded-lg border p-4 hover:bg-muted">
+                            <Link href={`/dashboard/skills/${skill.id}`} className="surface skill-link space-y-2">
                                 <h2 className="break-words text-lg font-semibold">{skill.title}</h2>
                                 <p>Lv.{calculateLevel(skill.record.reduce((sum, record) => sum + record.minutes, 0))}</p>
                                 <p>累計学習時間：{calculateTotalStudyTime(skill.record)}</p>
