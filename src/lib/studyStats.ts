@@ -6,6 +6,10 @@ export function calculateTotalStudyTime(records: { minutes: number; studiedAt: D
         0
     );
 
+    return formatStudyMinutes(totalMinutes);
+}
+
+export function formatStudyMinutes(totalMinutes: number) {
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
 
